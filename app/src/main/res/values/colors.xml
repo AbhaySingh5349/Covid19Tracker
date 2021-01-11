@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="totalCasesColor">#fed70e</color>
+    <color name="activeCasesColor">#56b7f1</color>
+    <color name="recoveredCasesColor">#63cbb0</color>
+    <color name="deceasedCasesColor">#FF0000</color>
 </resources>
