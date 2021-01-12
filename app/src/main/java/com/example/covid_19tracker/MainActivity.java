@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,9 @@ import org.eazegraph.lib.models.PieModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.worldStatsPieChart)
     PieChart worldStatsPieChart;
+    @BindView(R.id.dateTextView)
+    TextView dateTextView;
     @BindView(R.id.worldStatsArcLoader)
     SimpleArcLoader worldStatsArcLoader;
     @BindView(R.id.cardViewConstraintLayout)
@@ -85,20 +91,34 @@ public class MainActivity extends AppCompatActivity {
                     deceasedCasesTextView.setText(jsonObject.getString("deaths"));
                     newDeceasedCasesTextView.setText("+ " + jsonObject.getString("todayDeaths"));
 
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, ''yy");
+                    String dateString = formatter.format(new Date(Long.parseLong(jsonObject.getString("updated"))));
+                    dateTextView.setText(dateString);
+
                     worldStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(totalCasesTextView.getText().toString()), Color.parseColor("#fed70e")));
                     worldStatsPieChart.addPieSlice(new PieModel("Active Cases",Integer.parseInt(activeCasesTextView.getText().toString()), Color.parseColor("#56b7f1")));
                     worldStatsPieChart.addPieSlice(new PieModel("Recovered Cases",Integer.parseInt(recoveredCasesTextView.getText().toString()), Color.parseColor("#63cbb0")));
-                    worldStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(totalCasesTextView.getText().toString()), Color.parseColor("#FF0000")));
+                    worldStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(deceasedCasesTextView.getText().toString()), Color.parseColor("#FF0000")));
 
                     worldStatsPieChart.startAnimation();
                     worldStatsArcLoader.stop();
                     worldStatsArcLoader.setVisibility(View.GONE);
                     cardViewConstraintLayout.setVisibility(View.VISIBLE);
+
+                    indiaDataCardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(MainActivity.this,IndiaDataActivity.class));
+                        }
+                    });
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     worldStatsArcLoader.stop();
                     worldStatsArcLoader.setVisibility(View.GONE);
                     cardViewConstraintLayout.setVisibility(View.VISIBLE);
+                    Toast.makeText(MainActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
