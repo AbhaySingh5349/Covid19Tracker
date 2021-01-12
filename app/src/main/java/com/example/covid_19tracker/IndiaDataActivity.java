@@ -59,6 +59,63 @@ public class IndiaDataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_india_data);
         ButterKnife.bind(this);
         
-    //    fetchIndiaData();
+        fetchIndiaData();
+    }
+
+    private void fetchIndiaData() {
+        indianStatsArcLoader.start();
+        String indiaDataURL = "https://api.covid19india.org/data.json";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, indiaDataURL, null, new Response.Listener<JSONObject>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray timeSeriesJsonArray = response.getJSONArray("cases_time_series");
+                    JSONObject timeSeriesJsonObject = timeSeriesJsonArray.getJSONObject(timeSeriesJsonArray.length()-1);
+
+                    JSONArray stateWiseJsonArray = response.getJSONArray("statewise");
+                    JSONObject stateWiseJsonObject = stateWiseJsonArray.getJSONObject(0);
+
+                    String year = timeSeriesJsonObject.getString("dateymd");
+
+                    dateTextView.setText(timeSeriesJsonObject.getString("date") + " " + year.substring(2,4));
+                    totalCasesTextView.setText(stateWiseJsonObject.getString("confirmed"));
+                    newTotalCasesTextView.setText("+ " + timeSeriesJsonObject.getString("dailyconfirmed"));
+                    activeCasesTextView.setText(stateWiseJsonObject.getString("active"));
+                    recoveredCasesTextView.setText(stateWiseJsonObject.getString("recovered"));
+                    newRecoveredCasesTextView.setText("+ " + timeSeriesJsonObject.getString("dailyrecovered"));
+                    deceasedCasesTextView.setText(stateWiseJsonObject.getString("deaths"));
+                    newDeceasedCasesTextView.setText("+ " + timeSeriesJsonObject.getString("dailydeceased"));
+
+                    indianStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(totalCasesTextView.getText().toString()), Color.parseColor("#fed70e")));
+                    indianStatsPieChart.addPieSlice(new PieModel("Active Cases",Integer.parseInt(activeCasesTextView.getText().toString()), Color.parseColor("#56b7f1")));
+                    indianStatsPieChart.addPieSlice(new PieModel("Recovered Cases",Integer.parseInt(recoveredCasesTextView.getText().toString()), Color.parseColor("#63cbb0")));
+                    indianStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(deceasedCasesTextView.getText().toString()), Color.parseColor("#FF0000")));
+
+                    indianStatsPieChart.startAnimation();
+                    indianStatsArcLoader.stop();
+                    indianStatsArcLoader.setVisibility(View.GONE);
+                    cardViewConstraintLayout.setVisibility(View.VISIBLE);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    indianStatsArcLoader.stop();
+                    indianStatsArcLoader.setVisibility(View.GONE);
+                    cardViewConstraintLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                indianStatsArcLoader.stop();
+                indianStatsArcLoader.setVisibility(View.GONE);
+                cardViewConstraintLayout.setVisibility(View.VISIBLE);
+                Toast.makeText(IndiaDataActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 }
