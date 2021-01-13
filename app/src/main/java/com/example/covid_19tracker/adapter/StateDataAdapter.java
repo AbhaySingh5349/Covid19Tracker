@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.covid_19tracker.R;
@@ -33,6 +32,11 @@ public class StateDataAdapter extends RecyclerView.Adapter<StateDataAdapter.Stat
     public StateDataAdapter.StateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.state_display_item, parent, false);
         return new StateViewHolder(view);
+    }
+
+    public void searchStateList(List<StateDataModelClass> searchList){
+        stateDataModelClassList = searchList;
+        notifyDataSetChanged();
     }
 
     @SuppressLint("SetTextI18n")

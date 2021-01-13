@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,6 +35,8 @@ import butterknife.ButterKnife;
 
 public class StateListActivity extends AppCompatActivity {
 
+    @BindView(R.id.stateListEditText)
+    EditText stateListEditText;
     @BindView(R.id.statesRecyclerView)
     RecyclerView statesRecyclerView;
     @BindView(R.id.stateListArcLoader)
@@ -51,6 +57,32 @@ public class StateListActivity extends AppCompatActivity {
         statesRecyclerView.setAdapter(stateDataAdapter);
 
         fetchStateList();
+
+        stateListEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchState(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void searchState(String characters) {
+        List<StateDataModelClass> charactersList = new ArrayList<>();
+        for (StateDataModelClass stateDataModelClass : stateDataModelClassList){
+            if(stateDataModelClass.getState().toLowerCase().contains(characters.toLowerCase())){
+                charactersList.add(stateDataModelClass);
+            }
+            stateDataAdapter.searchStateList(charactersList);
+        }
     }
 
     private void fetchStateList() {
