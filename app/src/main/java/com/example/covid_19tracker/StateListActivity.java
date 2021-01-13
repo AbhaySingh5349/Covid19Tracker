@@ -81,7 +81,7 @@ public class StateListActivity extends AppCompatActivity {
             if(stateDataModelClass.getState().toLowerCase().contains(characters.toLowerCase())){
                 charactersList.add(stateDataModelClass);
             }
-            stateDataAdapter.searchStateList(charactersList);
+            stateDataAdapter.searchStateList(charactersList, characters);
         }
     }
 
