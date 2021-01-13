@@ -78,7 +78,7 @@ public class StateDataAdapter extends RecyclerView.Adapter<StateDataAdapter.Stat
             }
             holder.stateNameTextView.setText(spannableStringBuilder);
         }else {
-            holder.stateNameTextView.setText((position+1) + ". " + state);
+            holder.stateNameTextView.setText(state);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

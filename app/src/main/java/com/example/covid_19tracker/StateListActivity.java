@@ -108,6 +108,7 @@ public class StateListActivity extends AppCompatActivity {
 
                         StateDataModelClass stateDataModelClass = new StateDataModelClass(active, confirmed, deaths, lastupdatedtime, recovered, state);
                         stateDataModelClassList.add(stateDataModelClass);
+                        stateDataAdapter.notifyDataSetChanged();
                     }
 
                     Handler handler = new Handler();

@@ -2,19 +2,40 @@ package com.example.covid_19tracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.covid_19tracker.adapter.DistrictDataAdapter;
+import com.example.covid_19tracker.model.DistrictDataModelClass;
+import com.leo.simplearcloader.SimpleArcLoader;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -40,12 +61,34 @@ public class DistrictDataActivity extends AppCompatActivity {
     TextView recoveredCasesTextView;
     @BindView(R.id.deceasedCasesTextView)
     TextView deceasedCasesTextView;
+    @BindView(R.id.districtsListArcLoader)
+    SimpleArcLoader districtsListArcLoader;
+    @BindView(R.id.districtsRecyclerView)
+    RecyclerView districtsRecyclerView;
+    @BindView(R.id.stateListEditText)
+    EditText stateListEditText;
+    @BindView(R.id.cardView5)
+    CardView cardView5;
+
+    DistrictDataAdapter districtDataAdapter;
+    List<DistrictDataModelClass> districtDataModelClassList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_district_data);
         ButterKnife.bind(this);
+
+        districtDataModelClassList = new ArrayList<>();
+        districtsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        districtDataAdapter = new DistrictDataAdapter(this,districtDataModelClassList);
+        districtsRecyclerView.setAdapter(districtDataAdapter);
+        fetchDistrictData();
+    }
+
+    private void fetchDistrictData(){
+        districtsListArcLoader.start();
+        String districtUrl = "https://api.covid19india.org/v2/state_district_wise.json";
 
         // receiving Intent from StateDataAdapter
         String stateName = getIntent().getStringExtra("State Name");
@@ -84,6 +127,70 @@ public class DistrictDataActivity extends AppCompatActivity {
         stateStatsPieChart.addPieSlice(new PieModel("Recovered Cases",Integer.parseInt(recovered), Color.parseColor("#63cbb0")));
         stateStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(deaths), Color.parseColor("#FF0000")));
 
-        stateStatsPieChart.startAnimation();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, districtUrl, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                districtDataModelClassList.clear();
+
+                for (int i=1; i< response.length(); i++){
+                    int newState = 0;
+                    try {
+                        JSONObject jsonObjectState = response.getJSONObject(i);
+
+                        if(stateName.toLowerCase().equals(jsonObjectState.getString("state").toLowerCase())){
+                            JSONArray jsonArrayDistrict = jsonObjectState.getJSONArray("districtData");
+
+                            for (int j=0; j <jsonArrayDistrict.length(); j++){
+                                JSONObject jsonObjectDistrict = jsonArrayDistrict.getJSONObject(j);
+
+                                String districtName = jsonObjectDistrict.getString("district");
+                                String activeCases = jsonObjectDistrict.getString("active");
+                                String deceased = jsonObjectDistrict.getString("deceased");
+
+                                DistrictDataModelClass districtDataModelClass = new DistrictDataModelClass(districtName, activeCases, deceased);
+                                districtDataModelClassList.add(districtDataModelClass);
+                                districtDataAdapter.notifyDataSetChanged();
+                            }
+                            newState = 1;
+                        }
+                        if(newState==1){
+                            break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Handler handler = new Handler();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        districtsListArcLoader.stop();
+                        stateStatsPieChart.startAnimation();
+                        districtsListArcLoader.setVisibility(View.GONE);
+                        districtsRecyclerView.setVisibility(View.VISIBLE);
+                        stateListEditText.setVisibility(View.VISIBLE);
+                        cardView5.setVisibility(View.VISIBLE);
+                        stateStatsCardView.setVisibility(View.VISIBLE);
+                    }
+                };
+                handler.postDelayed(runnable,1000);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                districtsListArcLoader.stop();
+                stateStatsPieChart.startAnimation();
+                districtsListArcLoader.setVisibility(View.GONE);
+                districtsRecyclerView.setVisibility(View.VISIBLE);
+                stateListEditText.setVisibility(View.VISIBLE);
+                cardView5.setVisibility(View.VISIBLE);
+                stateStatsCardView.setVisibility(View.VISIBLE);
+                Toast.makeText(DistrictDataActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
     }
 }
