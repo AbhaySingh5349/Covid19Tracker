@@ -9,6 +9,8 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.covid_19tracker.adapter.DistrictDataAdapter;
 import com.example.covid_19tracker.model.DistrictDataModelClass;
+import com.example.covid_19tracker.model.StateDataModelClass;
 import com.leo.simplearcloader.SimpleArcLoader;
 
 import org.eazegraph.lib.charts.PieChart;
@@ -65,8 +68,8 @@ public class DistrictDataActivity extends AppCompatActivity {
     SimpleArcLoader districtsListArcLoader;
     @BindView(R.id.districtsRecyclerView)
     RecyclerView districtsRecyclerView;
-    @BindView(R.id.stateListEditText)
-    EditText stateListEditText;
+    @BindView(R.id.districtListEditText)
+    EditText districtListEditText;
     @BindView(R.id.cardView5)
     CardView cardView5;
 
@@ -84,6 +87,33 @@ public class DistrictDataActivity extends AppCompatActivity {
         districtDataAdapter = new DistrictDataAdapter(this,districtDataModelClassList);
         districtsRecyclerView.setAdapter(districtDataAdapter);
         fetchDistrictData();
+
+        districtListEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchDistrict(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void searchDistrict(String characters) {
+        List<DistrictDataModelClass> charactersList = new ArrayList<>();
+        for (DistrictDataModelClass districtDataModelClass : districtDataModelClassList){
+            if(districtDataModelClass.getDistrict().toLowerCase().contains(characters.toLowerCase())){
+                charactersList.add(districtDataModelClass);
+            }
+            districtDataAdapter.searchStateList(charactersList, characters);
+        }
     }
 
     private void fetchDistrictData(){
@@ -169,7 +199,7 @@ public class DistrictDataActivity extends AppCompatActivity {
                         stateStatsPieChart.startAnimation();
                         districtsListArcLoader.setVisibility(View.GONE);
                         districtsRecyclerView.setVisibility(View.VISIBLE);
-                        stateListEditText.setVisibility(View.VISIBLE);
+                        districtListEditText.setVisibility(View.VISIBLE);
                         cardView5.setVisibility(View.VISIBLE);
                         stateStatsCardView.setVisibility(View.VISIBLE);
                     }
@@ -183,7 +213,7 @@ public class DistrictDataActivity extends AppCompatActivity {
                 stateStatsPieChart.startAnimation();
                 districtsListArcLoader.setVisibility(View.GONE);
                 districtsRecyclerView.setVisibility(View.VISIBLE);
-                stateListEditText.setVisibility(View.VISIBLE);
+                districtListEditText.setVisibility(View.VISIBLE);
                 cardView5.setVisibility(View.VISIBLE);
                 stateStatsCardView.setVisibility(View.VISIBLE);
                 Toast.makeText(DistrictDataActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();

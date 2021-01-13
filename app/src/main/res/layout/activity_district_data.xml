@@ -257,7 +257,7 @@
     </androidx.cardview.widget.CardView>
 
     <EditText
-        android:id="@+id/stateListEditText"
+        android:id="@+id/districtListEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -265,19 +265,19 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:padding="12dp"
-        android:ems="10"
-        android:maxLines="1"
-        android:hint="Search District"
-        android:drawablePadding="10dp"
-        android:visibility="gone"
+        android:background="@drawable/edit_text_bg"
         android:drawableStart="@drawable/ic_search"
+        android:drawableLeft="@drawable/ic_search"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="Search District"
         android:inputType="textCapWords"
+        android:maxLines="1"
+        android:padding="12dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stateStatsCardView"
-        android:background="@drawable/edit_text_bg"
-        android:drawableLeft="@drawable/ic_search" />
+        app:layout_constraintTop_toBottomOf="@+id/stateStatsCardView" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView5"
@@ -288,12 +288,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:visibility="gone"
         app:cardCornerRadius="20dp"
         app:cardElevation="12dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stateListEditText">
+        app:layout_constraintTop_toBottomOf="@+id/districtListEditText">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
