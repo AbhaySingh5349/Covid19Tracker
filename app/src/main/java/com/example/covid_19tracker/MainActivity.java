@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     String dateString = formatter.format(new Date(Long.parseLong(jsonObject.getString("updated"))));
                     dateTextView.setText(dateString);
 
-                    worldStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(todayCases), Color.parseColor("#fed70e")));
+                    worldStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(totalCases), Color.parseColor("#fed70e")));
                     worldStatsPieChart.addPieSlice(new PieModel("Active Cases",Integer.parseInt(activeCases), Color.parseColor("#56b7f1")));
                     worldStatsPieChart.addPieSlice(new PieModel("Recovered Cases",Integer.parseInt(recoveredCases), Color.parseColor("#63cbb0")));
                     worldStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(deceasedCases), Color.parseColor("#FF0000")));

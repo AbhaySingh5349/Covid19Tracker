@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +59,8 @@ public class IndiaDataActivity extends AppCompatActivity {
     TextView deceasedCasesTextView;
     @BindView(R.id.newDeceasedCasesTextView)
     TextView newDeceasedCasesTextView;
+    @BindView(R.id.stateDataCardView)
+    CardView stateDataCardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +105,7 @@ public class IndiaDataActivity extends AppCompatActivity {
                     deceasedCasesTextView.setText(NumberFormat.getInstance().format(Integer.parseInt(deceasedCases)));
                     newDeceasedCasesTextView.setText("+ " + NumberFormat.getInstance().format(Integer.parseInt(newDeceased)));
 
-                    indianStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(todayCases), Color.parseColor("#fed70e")));
+                    indianStatsPieChart.addPieSlice(new PieModel("Total Cases",Integer.parseInt(totalCases), Color.parseColor("#fed70e")));
                     indianStatsPieChart.addPieSlice(new PieModel("Active Cases",Integer.parseInt(activeCases), Color.parseColor("#56b7f1")));
                     indianStatsPieChart.addPieSlice(new PieModel("Recovered Cases",Integer.parseInt(recoveredCases), Color.parseColor("#63cbb0")));
                     indianStatsPieChart.addPieSlice(new PieModel("Deceased Cases",Integer.parseInt(deceasedCases), Color.parseColor("#FF0000")));
@@ -120,12 +123,20 @@ public class IndiaDataActivity extends AppCompatActivity {
                     };
                     handler.postDelayed(runnable,1000);
 
+                    stateDataCardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(IndiaDataActivity.this,StateListActivity.class));
+                        }
+                    });
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     indianStatsArcLoader.stop();
                     indianStatsArcLoader.setVisibility(View.GONE);
                     indianStatsCardView.setVisibility(View.VISIBLE);
                     cardViewConstraintLayout.setVisibility(View.VISIBLE);
+                    Toast.makeText(IndiaDataActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
