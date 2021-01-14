@@ -136,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    worldDataCardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(MainActivity.this,CountryListActivity.class));
+                        }
+                    });
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     worldStatsArcLoader.stop();
