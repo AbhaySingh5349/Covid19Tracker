@@ -2,6 +2,7 @@ package com.example.covid_19tracker.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.covid_19tracker.CountryDataActivity;
 import com.example.covid_19tracker.R;
 import com.example.covid_19tracker.model.CountriesDataModelClass;
 import com.example.covid_19tracker.model.StateDataModelClass;
@@ -86,8 +88,11 @@ public class CountriesDataAdapter extends RecyclerView.Adapter<CountriesDataAdap
         holder.countryActiveCasesTextView.setText(NumberFormat.getInstance().format(Integer.parseInt(activeCases)));
 
         String recovered = countriesDataModelClass.getRecovered();
-
         String deceased = countriesDataModelClass.getDeaths();
+        String todayCases = countriesDataModelClass.getTodayCases();
+        String todayDeaths = countriesDataModelClass.getTodayDeaths();
+        String todayRecovered = countriesDataModelClass.getTodayRecovered();
+        String critical = countriesDataModelClass.getCritical();
 
         long timestamp = countriesDataModelClass.getUpdated();
         Calendar calendar = Calendar.getInstance();
@@ -95,14 +100,25 @@ public class CountriesDataAdapter extends RecyclerView.Adapter<CountriesDataAdap
         Date date = calendar.getTime();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    //    holder.dateTextView.setText(simpleDateFormat.format(date));
 
-    /*    holder.countryStatsPieChart.addPieSlice(new PieModel(String.valueOf(position),Integer.parseInt(totalCases), Color.parseColor("#fed70e")));
-        holder.countryStatsPieChart.addPieSlice(new PieModel(String.valueOf(position),Integer.parseInt(activeCases), Color.parseColor("#56b7f1")));
-        holder.countryStatsPieChart.addPieSlice(new PieModel(String.valueOf(position),Integer.parseInt(recovered), Color.parseColor("#63cbb0")));
-        holder.countryStatsPieChart.addPieSlice(new PieModel(String.valueOf(position),Integer.parseInt(deceased), Color.parseColor("#FF0000")));
-
-        holder.countryStatsPieChart.startAnimation(); */
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CountryDataActivity.class);
+                intent.putExtra("Flag Url", flagUrl);
+                intent.putExtra("Country Name",countryName);
+                intent.putExtra("Confirmed Cases",totalCases);
+                intent.putExtra("Active Cases",activeCases);
+                intent.putExtra("Recovered",recovered);
+                intent.putExtra("Deaths",deceased);
+                intent.putExtra("Today Cases", todayCases);
+                intent.putExtra("Today Deaths", todayDeaths);
+                intent.putExtra("Today Recovered", todayRecovered);
+                intent.putExtra("Critical", critical);
+                intent.putExtra("Last Time Updated",simpleDateFormat.format(date));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

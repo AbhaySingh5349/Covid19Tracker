@@ -107,11 +107,15 @@ public class CountryListActivity extends AppCompatActivity {
                         String deaths = countryJSONObject.getString("deaths");
                         String recovered = countryJSONObject.getString("recovered");
                         String active = countryJSONObject.getString("active");
+                        String todayCases = countryJSONObject.getString("todayCases");
+                        String todayDeaths = countryJSONObject.getString("todayDeaths");
+                        String todayRecovered = countryJSONObject.getString("todayRecovered");
+                        String critical = countryJSONObject.getString("critical");
 
                         JSONObject flagJSONObject = countryJSONObject.getJSONObject("countryInfo");
                         String flagUrl = flagJSONObject.getString("flag");
 
-                        CountriesDataModelClass countriesDataModelClass = new CountriesDataModelClass(countryName, flagUrl, cases, deaths, recovered, active, timeStamp);
+                        CountriesDataModelClass countriesDataModelClass = new CountriesDataModelClass(countryName, flagUrl, cases, deaths, recovered, active, todayCases, todayDeaths, todayRecovered, critical, timeStamp);
                         countriesDataModelClassList.add(countriesDataModelClass);
                         countriesDataAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {

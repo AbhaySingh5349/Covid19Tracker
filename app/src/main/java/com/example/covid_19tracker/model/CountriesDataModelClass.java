@@ -2,16 +2,20 @@ package com.example.covid_19tracker.model;
 
 public class CountriesDataModelClass {
 
-    String country, flag, cases, deaths, recovered, active;
+    String country, flag, cases, deaths, recovered, active, todayCases, todayDeaths, todayRecovered, critical;
     long updated;
 
-    public CountriesDataModelClass(String country, String flag, String cases, String deaths, String recovered, String active, long updated) {
+    public CountriesDataModelClass(String country, String flag, String cases, String deaths, String recovered, String active, String todayCases, String todayDeaths, String todayRecovered, String critical, long updated) {
         this.country = country;
         this.flag = flag;
         this.cases = cases;
         this.deaths = deaths;
         this.recovered = recovered;
         this.active = active;
+        this.todayCases = todayCases;
+        this.todayDeaths = todayDeaths;
+        this.todayRecovered = todayRecovered;
+        this.critical = critical;
         this.updated = updated;
     }
 
@@ -61,6 +65,38 @@ public class CountriesDataModelClass {
 
     public void setActive(String active) {
         this.active = active;
+    }
+
+    public String getTodayCases() {
+        return todayCases;
+    }
+
+    public void setTodayCases(String todayCases) {
+        this.todayCases = todayCases;
+    }
+
+    public String getTodayDeaths() {
+        return todayDeaths;
+    }
+
+    public void setTodayDeaths(String todayDeaths) {
+        this.todayDeaths = todayDeaths;
+    }
+
+    public String getTodayRecovered() {
+        return todayRecovered;
+    }
+
+    public void setTodayRecovered(String todayRecovered) {
+        this.todayRecovered = todayRecovered;
+    }
+
+    public String getCritical() {
+        return critical;
+    }
+
+    public void setCritical(String critical) {
+        this.critical = critical;
     }
 
     public long getUpdated() {
