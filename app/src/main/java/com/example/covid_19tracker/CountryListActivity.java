@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.covid_19tracker.adapter.CountriesDataAdapter;
 import com.example.covid_19tracker.model.CountriesDataModelClass;
+import com.example.covid_19tracker.model.StateDataModelClass;
 import com.leo.simplearcloader.SimpleArcLoader;
 
 import org.json.JSONArray;
@@ -57,6 +60,32 @@ public class CountryListActivity extends AppCompatActivity {
         countriesRecyclerView.setAdapter(countriesDataAdapter);
 
         fetchCountriesData();
+
+        countryListEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchCountry(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void searchCountry(String characters) {
+        List<CountriesDataModelClass> charactersList = new ArrayList<>();
+        for (CountriesDataModelClass countriesDataModelClass : countriesDataModelClassList){
+            if(countriesDataModelClass.getCountry().toLowerCase().contains(characters.toLowerCase())){
+                charactersList.add(countriesDataModelClass);
+            }
+            countriesDataAdapter.searchCountryList(charactersList, characters);
+        }
     }
 
     private void fetchCountriesData() {
